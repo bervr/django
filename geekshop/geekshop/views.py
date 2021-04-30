@@ -1,6 +1,4 @@
 from django.shortcuts import render
-
-
 # Create your views here.
 do_active = {'links': [
             {'href': '/', 'name': 'домой'},
@@ -8,6 +6,9 @@ do_active = {'links': [
             {'href': '/contacts/', 'name':'контакты'},
         ]}
 
-def products(request):
-    return render(request, 'products.html', context = do_active)
+def main(request):
+    return render(request, 'index.html', context=do_active)
 
+
+def contacts(request):
+    return render(request, 'contacts.html', context=do_active)
