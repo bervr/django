@@ -1,0 +1,14 @@
+<ul class="links-menu">
+{% for category in products_category %}
+  <li>
+            <a href="{{ category.id}}" class=
+               "{% if now_category == category.id %}
+                        active
+                      {% endif %}">
+                {{ category.name }}
+            </a>
+        </li>
+
+    {% endfor %}
+</ul>
+
