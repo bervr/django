@@ -1,0 +1,22 @@
+<div class="header clearfix">
+    <a href="index.html" class="logo"></a>
+<ul class="menu">
+
+{% for link in links %}
+  <li>
+            <a href="{{ link.href }}" class=
+               "{% if request.get_full_path == link.href %}
+                        active
+                      {% endif %}">
+                {{ link.name }}
+            </a>
+        </li>
+
+    {% endfor %}
+
+</ul>
+    <a href="#" class="search"></a>
+    <a href="#" class="basket"></a>
+</div>
+
+
