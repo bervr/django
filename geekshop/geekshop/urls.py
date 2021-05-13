@@ -25,7 +25,7 @@ app_name = 'geekshop'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', main),
+    path('', main, name='index'),
     path('contacts/', contacts),
     path('products/', include(urls, namespace='products')),
     path('auth/', include('authapp.urls', namespace='auth')),
