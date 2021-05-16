@@ -1,5 +1,9 @@
 {% extends 'index.html' %}
 {% load static %}
+{% block js %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="{% static '/basketapp/js/basket.js' %}"></script>
+{% endblock %}
 {% block slider %}
 		<div class="hero-white">
 			{% include 'inc_menu.html' %}
@@ -8,36 +12,7 @@
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
-            <div class="row">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Продукт</th>
-                    <th scope="col">Количество</th>
-                    <th scope="col">Сумма</th>
-                </tr>
-              </thead>
-              <tbody>
-              {% for item in basket %}
-                  <tr>
-                      <th scope="row">{{ forloop.counter }}</th>
-                      <td>{{ item.product }}</td>
-                      <td>{{ item.quantity }}</td>
-                      <td>{%  for i in products   %}
-                              {% if i.pk == item.pk %}
-                                  {% widthratio i.price 1 item.quantity %}
-                              {% endif %}
-                          {% endfor %}
-                      </td>
-
-
-                  </tr>
-              {% endfor %}
-
-              </tbody>
-            </table>
-            </div>
+            {% include 'inc_basket_list.html' %}
         </div>
     {% endif %}
 {% endblock %}
