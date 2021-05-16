@@ -1,0 +1,43 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block slider %}
+		<div class="hero-white">
+			{% include 'inc_menu.html' %}
+		</div>
+		{% endblock %}
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="container">
+            <div class="row">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Продукт</th>
+                    <th scope="col">Количество</th>
+                    <th scope="col">Сумма</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for item in basket %}
+                  <tr>
+                      <th scope="row">{{ forloop.counter }}</th>
+                      <td>{{ item.product }}</td>
+                      <td>{{ item.quantity }}</td>
+                      <td>{%  for i in products   %}
+                              {% if i.pk == item.pk %}
+                                  {% widthratio i.price 1 item.quantity %}
+                              {% endif %}
+                          {% endfor %}
+                      </td>
+
+
+                  </tr>
+              {% endfor %}
+
+              </tbody>
+            </table>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -24,10 +24,12 @@ from .views import contacts, main
 app_name = 'geekshop'
 
 urlpatterns = [
+    path('', main, name='index'),
     path('admin/', admin.site.urls),
-    path('', main),
-    path('contacts/', contacts),
+    path('contacts/', contacts, name='contacts'),
     path('products/', include(urls, namespace='products')),
-    ]
+    path('auth/', include('authapp.urls', namespace='auth')),
+    path('basket/', include('basketapp.urls', namespace='basket')),
+]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

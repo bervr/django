@@ -1,22 +1,43 @@
+
 <div class="header clearfix">
-    <a href="index.html" class="logo"></a>
-<ul class="menu">
-
-{% for link in links %}
-  <li>
-            <a href="{{ link.href }}" class=
-               "{% if request.get_full_path == link.href %}
+    <a href="{% url 'index' %}" class="logo"></a>
+    <ul class="menu">
+        <li><a href="{% url 'index' %}" class="{% if request.resolver_match.route == '' %}
+                    active
+                  {% endif %}">домой</a></li>
+        <li><a href="{% url 'products:category' 0 %}" class="{% if request.resolver_match.route == 'products/category/<int:pk>/' %}
                         active
-                      {% endif %}">
-                {{ link.name }}
-            </a>
-        </li>
+                      {% endif %}">продукты</a></li>
+        <li><a href="{% url 'contacts' %}" class="{% if request.resolver_match.route == 'contacts/' %}
+                        active
+                      {% endif %}">контакты</a></li>
+        {% if user.is_authenticated %}
+            <li>
+                <a href="{% url 'auth:edit' %}" class="{% if request.resolver_match.route == 'auth/profile/' %}
+                        active {% endif %}">
+                    {{ user.first_name|default:'Пользователь' }}
+                </a>
+            </li>
+        {% endif %}
+            <li>
+                {% if user.is_authenticated %}
+                  <a href="{% url 'auth:logout' %}">выйти</a>
+                {% else %}
+                  <a href="{% url 'auth:login' %}">войти</a>
+                {% endif %}
+            </li>
+            <li>
+                {#% if basket %#}
+                <a href="{% url 'basket:list' %}" class="fa fa-shopping-basket">
+                    <span>
+                        {% if basket %} {{ basket|length }} {% endif %}
+                    </span>
+                </a>
+{#            {% endif %}#}
+            </li>
+            <li>
+            <a href="#" class="search"></a>
+            </li>
+    </ul>
 
-    {% endfor %}
-
-</ul>
-    <a href="#" class="search"></a>
-    <a href="#" class="basket"></a>
 </div>
-
-
