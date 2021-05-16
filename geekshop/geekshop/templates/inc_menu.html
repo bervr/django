@@ -26,14 +26,18 @@
                   <a href="{% url 'auth:login' %}">войти</a>
                 {% endif %}
             </li>
+            <li>
+                {#% if basket %#}
+                <a href="{% url 'basket:list' %}" class="fa fa-shopping-basket">
+                    <span>
+                        {% if basket %} {{ basket|length }} {% endif %}
+                    </span>
+                </a>
+{#            {% endif %}#}
+            </li>
+            <li>
+            <a href="#" class="search"></a>
+            </li>
     </ul>
-{#    {% if basket %}#}
-{#        <a href="{% url 'basket:list' %}" class="fa fa-shopping-basket">#}
-{#            <span>#}
-{#                {% if basket %} {{ basket|length }} {% endif %}#}
-{#            </span>#}
-{#        </a>#}
-{#    {% endif %}#}
-    <a href="#" class="search"></a>
 
 </div>
