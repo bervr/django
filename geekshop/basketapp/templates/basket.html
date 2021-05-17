@@ -12,7 +12,9 @@
 {% block content %}
     {% if user.is_authenticated %}
         <div class="container">
+        <div class="basket_list">
             {% include 'inc_basket_list.html' %}
+        </div>
         </div>
     {% endif %}
 {% endblock %}
