@@ -32,7 +32,7 @@
   {
       "category": "Дом",
       "name": "Стул фамильный",
-      "image": "products_img/product-4_IMiFTbV.jpg",
+      "image": "products_img/product-4.jpg",
       "short_desc": "Очень интересный стул",
       "description": "Расположитесь комфортно.\r\n\r\nОтличное качество материалов позволит вам это.\r\n\r\nРазличные цвета\r\n\r\nвысочайший уровень эргономики и прочность.",
       "price": "2300.00",
@@ -41,7 +41,7 @@
   {
       "category": "Офис",
       "name": "Лампа сфера",
-      "image": "products_img/product-1_m6MnoAk.jpg",
+      "image": "products_img/product-1.jpg",
       "short_desc": "Простая лампа для гостиной",
       "description": "Расположитесь комфортно.\r\n\r\nОтличное качество материалов позволит вам это.\r\n\r\nРазличные цвета\r\n\r\nвысочайший уровень эргономики и прочность.",
       "price": "4500.00",

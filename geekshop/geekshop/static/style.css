@@ -544,7 +544,7 @@ html, body {
 
 .footer {
 	height: 384px;
-	width: 1169px;
+	width: 1366px;
 	background-color: #f7f7f7;
 	padding-left: 99px;
 	padding-right: 98px;
@@ -702,6 +702,10 @@ td:first-child {
 	padding-right: 211px;
 	position: relative;
 }
+
+.userhead{
+	height: 160px;
+}
 .hero h1 {
 	color:  #212121;
 	font-size: 62px;
@@ -713,7 +717,7 @@ td:first-child {
 }
 
 .location {
-	padding: 0px 97px;
+	padding: 0px 37px;
 }
 .location-1 {
 	height: 368px;
