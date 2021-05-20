@@ -9,8 +9,8 @@
         <input class="form-control" type="submit" value="сохранить">
     </form>
     <button class="btn btn-round form-control last">
-        <a href="{% url 'index' %}" class="">
-            на главную
+        <a href="{% url 'admin_staff:users' %}" class="">
+            весь список
         </a>
     </button>
     <div class="user_avatar"><img src="/media/{{ user.user_pic }}"></div>

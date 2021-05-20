@@ -8,7 +8,7 @@ from django.urls import reverse
 from mainapp.models import Product, ProductCategory
 from authapp.models import ShopUser
 
-from adminapp.forms import ShopUserRegisterForm,ShopUserEditForm
+from adminapp.forms import ShopUserRegisterForm,ShopUserEditForm,ProductCategoryEditForm,ProductCategoryCreateForm,ProductEditForm
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -81,15 +81,49 @@ def categories(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def category_create(request):
-    pass
+    title = 'категории/создание'
+    if request.method == 'POST':
+        category_form = ProductCategoryCreateForm(request.POST, request.FILES)
+        if category_form.is_valid():
+            category_form.save()
+            return HttpResponseRedirect(reverse('admin_staff:categories'))
+    else:
+        category_form = ProductCategoryCreateForm()
+
+    context = {'title': title,
+               'category_form': category_form,
+               }
+
+    return render(request, 'adminapp/category_create.html', context)
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def category_update(request, pk):
-    pass
+    title = 'категории/изменение'
+    category = ProductCategory.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        category_form = ProductCategoryEditForm(request.POST, request.FILES,instance=category)
+        if category_form.is_valid():
+            category_form.save()
+            return HttpResponseRedirect(reverse('admin_staff:categories'))
+    else:
+        category_form = ProductCategoryEditForm(instance=category)
+
+
+    context = {'title': title,
+               'category_form': category_form,
+               'pk':pk
+               }
+
+    return render(request, 'adminapp/category_create.html', context)
 
 @user_passes_test(lambda u: u.is_superuser)
 def category_delete(request, pk):
-    pass
+    category = ProductCategory.objects.get(pk=pk)
+    category.delete()
+    # category.save()
+    return HttpResponseRedirect(reverse('admin_staff:categories'))
 
 @user_passes_test(lambda u: u.is_superuser)
 def products(request, pk):
@@ -108,16 +142,59 @@ def products(request, pk):
 
 @user_passes_test(lambda u: u.is_superuser)
 def product_create(request, pk):
-    pass
+    title = 'новый продукт'
+    category = get_object_or_404(ProductCategory, pk=pk)
+    if request.method == 'POST':
+        product_form = ProductEditForm(request.POST, request.FILES)
+        if product_form.is_valid():
+            product_form.save()
+            return HttpResponseRedirect(reverse('admin_staff:products', args=[pk]))
+    else:
+        product_form = ProductEditForm(initial={'category': category})  # вот понятно что RTFM, но я бы до этого за
+        # месяц не додумался
+
+    context = {'title': title,
+               'product_form': product_form,
+               'category': category,
+               'pk': pk
+               }
+    return render(request, 'adminapp/product.html', context)
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def product_read(request, pk):
-    pass
+    title = ' о продукте'
+    product = get_object_or_404(Product, pk=pk)
+    content = {'title': title,
+               'object': product,
+               }
+
+    return render(request, 'adminapp/product_about.html', content)
+
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def product_update(request, pk):
-    pass
+    title = 'продукт/редактирование'
+    product = Product.objects.get(pk=pk)
+    if request.method == 'POST':
+        product_form = ProductEditForm(request.POST, request.FILES, instance=product)
+        if product_form.is_valid():
+            product_form.save()
+            return HttpResponseRedirect(reverse('admin_staff:product_update', args=[product.pk]))
+    else:
+        product_form = ProductEditForm(instance=product)
+    context = {'title': title,
+               'product_form': product_form,
+               'product':product
+               }
+
+    return render(request, 'adminapp/product.html', context)
 
 @user_passes_test(lambda u: u.is_superuser)
 def product_delete(request, pk):
-    pass
+    product = Product.objects.get(pk=pk)
+    category_pk = product.category.pk
+    product.is_active = False
+    product.save()
+    return HttpResponseRedirect(reverse( 'admin_staff:products' , args=[category_pk]))

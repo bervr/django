@@ -1,17 +1,8 @@
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import  UserCreationForm, UserChangeForm
 from authapp.models import ShopUser
 from django import forms
+from mainapp.models import ProductCategory, Product
 
-#
-# class ShopUserLoginForm(AuthenticationForm):
-#     class Meta:
-#         model = ShopUser
-#         fields = ('username', 'password')
-#
-#     def __init__(self, *args, **kwargs):
-#         super(ShopUserLoginForm, self).__init__(*args, **kwargs)
-#         for field_name, field in self.fields.items():
-#             field.widget.attrs['class'] = 'form-control'
 
 
 class ShopUserRegisterForm(UserCreationForm):
@@ -32,7 +23,6 @@ class ShopUserRegisterForm(UserCreationForm):
 
         return data
 
-
 class ShopUserEditForm(UserChangeForm):
     class Meta:
         model = ShopUser
@@ -52,3 +42,36 @@ class ShopUserEditForm(UserChangeForm):
             raise forms.ValidationError("Вы слишком молоды!")
 
         return data
+
+class ProductCategoryEditForm(forms.ModelForm):
+    class Meta:
+        model = ProductCategory
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.help_text = ''
+
+class ProductCategoryCreateForm(forms.ModelForm):
+    class Meta:
+        model = ProductCategory
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.help_text = ''
+
+class ProductEditForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.help_text = ''
