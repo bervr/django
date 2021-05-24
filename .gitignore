@@ -3,3 +3,4 @@ venv
 /base_site/
 /.idea
 /base_site
+db.sqlite3
