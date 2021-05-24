@@ -1,7 +1,5 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import user_passes_test
-
-from authapp.models import ShopUser
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
