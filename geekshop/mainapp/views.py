@@ -7,6 +7,8 @@ from basketapp.models import Basket
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
+
+
 def get_basket(user):
     if user.is_authenticated:
         return Basket.objects.filter(user=user)

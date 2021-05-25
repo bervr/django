@@ -13,6 +13,7 @@ class ProductCategory(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     href = models.CharField(max_length=64, verbose_name='ссылка', default= '')
+    is_active = models.BooleanField(default=True)
     def __str__(self):
         return self.name
 
