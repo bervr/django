@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import user_passes_test
+from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
@@ -145,53 +146,51 @@ class ProductListView(ListView):
     template_name = 'adminapp/products.html'
     context_object_name = 'objects'
 
-    def get(self, request,pk, *args, **kwargs):
-        category = get_object_or_404(ProductCategory,pk = pk)
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self,  **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        category = get_object_or_404(ProductCategory, pk= pk)
+        context.update({'title': 'Продукты категории',
+                        'category': category,
+                        'pk': pk
+                        })
+        return context
+
+
+class ProductCreateView(CreateView):
+    model = Product
+    template_name = 'adminapp/product.html'
+    form_class = ProductEditForm
+
+    def get_initial(self, **kwargs):
+        initial = super().get_initial()
+        initial = initial.copy()
+        pk = self.kwargs.get('pk')
+        initial['category'] = ProductCategory.objects.get(pk= pk)
+        return initial
+
+    def get_success_url(self, **kwargs):
+        pk = self.kwargs.get('pk')
+        return reverse('admin_staff:products', args=[pk])
+
+    def get_context_data(self,  **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        category = ProductCategory.objects.get(pk= pk)
+        context.update({'title': 'новый продукт',
+                        'category': category,
+                        'pk': pk,
+                        })
+        return context
 
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({'title': 'Продукты категории'})
-        return context
-
-# @user_passes_test(lambda u: u.is_superuser)
-# def products(request, pk):
-#     title = 'админка/продукт'
-#
-#     category = get_object_or_404(ProductCategory, pk=pk)
-#     products_list = Product.objects.filter(category__pk=pk).order_by('name')
-#
-#     context = {
-#         'title': title,
-#         'category': category,
-#         'objects': products_list,
-#     }
-#
-#     return render(request, 'adminapp/products.html', context)
-
-
-@user_passes_test(lambda u: u.is_superuser)
-def product_create(request, pk):
-    title = 'новый продукт'
-    category = get_object_or_404(ProductCategory, pk=pk)
-    if request.method == 'POST':
-        product_form = ProductEditForm(request.POST, request.FILES)
-        if product_form.is_valid():
-            product_form.save()
-            return HttpResponseRedirect(reverse('admin_staff:products', args=[pk]))
-    else:
-        product_form = ProductEditForm(initial={'category': category})  # вот понятно что RTFM, но я бы до этого за
-        # месяц не додумался
-
-    context = {'title': title,
-               'product_form': product_form,
-               'category': category,
-               'pk': pk
-               }
-    return render(request, 'adminapp/product.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
