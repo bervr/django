@@ -1,6 +1,5 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import user_passes_test
-from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
@@ -193,34 +192,51 @@ class ProductCreateView(CreateView):
 
 
 
-@user_passes_test(lambda u: u.is_superuser)
-def product_read(request, pk):
-    title = ' о продукте'
-    product = get_object_or_404(Product, pk=pk)
-    content = {'title': title,
-               'object': product,
-               }
 
-    return render(request, 'adminapp/product_about.html', content)
+class ProductReadView(DetailView):
+    model = Product
+    template_name = 'adminapp/product_about.html'
+
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
 
-@user_passes_test(lambda u: u.is_superuser)
-def product_update(request, pk):
-    title = 'продукт/редактирование'
-    product = Product.objects.get(pk=pk)
-    if request.method == 'POST':
-        product_form = ProductEditForm(request.POST, request.FILES, instance=product)
-        if product_form.is_valid():
-            product_form.save()
-            return HttpResponseRedirect(reverse('admin_staff:product_update', args=[product.pk]))
-    else:
-        product_form = ProductEditForm(instance=product)
-    context = {'title': title,
-               'product_form': product_form,
-               'product': product
-               }
+class ProductUpdateView(UpdateView):
+    model = Product
+    template_name = 'adminapp/product.html'
+    # form_class = ProductEditForm
+    fields = "__all__"
+    # initial = 10
 
-    return render(request, 'adminapp/product.html', context)
+    def get_initial(self, **kwargs):
+        pk = self.kwargs.get('pk')
+        initial = super().get_initial()
+        initial = initial.copy()
+        initial['product'] = Product.objects.get(pk=pk)
+        return initial
+
+
+    def get_success_url(self, **kwargs):
+        product_pk = self.kwargs.get('pk')
+        pk = Product.objects.get(pk=product_pk).category.pk
+        return reverse('admin_staff:products', args=[pk])
+
+    def get_context_data(self,  **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        product = Product.objects.get(pk= pk)
+        category = product.category
+        context.update({'title': 'редактировать продукт',
+                        'product': product,
+                        'category': category,
+                        })
+        return context
+
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
 
 
 @user_passes_test(lambda u: u.is_superuser)
