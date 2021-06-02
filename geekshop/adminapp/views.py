@@ -191,8 +191,6 @@ class ProductCreateView(CreateView):
         return super().dispatch(request, *args, **kwargs)
 
 
-
-
 class ProductReadView(DetailView):
     model = Product
     template_name = 'adminapp/product_about.html'
@@ -205,9 +203,7 @@ class ProductReadView(DetailView):
 class ProductUpdateView(UpdateView):
     model = Product
     template_name = 'adminapp/product.html'
-    # form_class = ProductEditForm
     fields = "__all__"
-    # initial = 10
 
     def get_initial(self, **kwargs):
         pk = self.kwargs.get('pk')
@@ -215,7 +211,6 @@ class ProductUpdateView(UpdateView):
         initial = initial.copy()
         initial['product'] = Product.objects.get(pk=pk)
         return initial
-
 
     def get_success_url(self, **kwargs):
         product_pk = self.kwargs.get('pk')
@@ -238,11 +233,25 @@ class ProductUpdateView(UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
 
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = 'adminapp/product_delete.html'
+    context_object_name = 'product'
 
-@user_passes_test(lambda u: u.is_superuser)
-def product_delete(request, pk):
-    product = Product.objects.get(pk=pk)
-    category_pk = product.category.pk
-    product.is_active = False
-    product.save()
-    return HttpResponseRedirect(reverse('admin_staff:products', args=[category_pk]))
+    def get_success_url(self, **kwargs):
+        product_pk = self.kwargs.get('pk')
+        pk = Product.objects.get(pk=product_pk).category.pk
+        return reverse('admin_staff:products', args=[pk])
+
+    def post(self, request, pk, *args, **kwargs):
+        if request.method == 'POST':
+            product = Product.objects.get(pk=pk)
+            category = product.category
+            product.is_active = False
+            product.save()
+            return HttpResponseRedirect(reverse('admin_staff:products', args=[category.pk]))
+
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
